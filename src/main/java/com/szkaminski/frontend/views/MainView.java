@@ -3,6 +3,7 @@ package com.szkaminski.frontend.views;
 import com.szkaminski.backend.model.User;
 
 import com.szkaminski.backend.service.UserService;
+import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.checkbox.Checkbox;
@@ -10,19 +11,22 @@ import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H2;
+import com.vaadin.flow.component.icon.Icon;
+import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.PasswordField;
 import com.vaadin.flow.component.textfield.TextArea;
+import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.router.Route;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
 @Route(value = "")
-public class UserList extends Div {
+public class MainView extends Div {
 
     private H2 welcome;
     private Grid<User> userGrid = new Grid<>();
@@ -30,7 +34,7 @@ public class UserList extends Div {
     private Dialog registerDialog, loginDialog;
 
 
-    public UserList(@Autowired UserService userService) {
+    public MainView(@Autowired UserService userService) {
         welcome = new H2("Hello World... I mean User");
         navbar = new HorizontalLayout();
         navbar.setWidth("90%");
@@ -63,10 +67,24 @@ public class UserList extends Div {
         userGrid.addColumn(User::getLogin)
                 .setHeader("Login")
                 .setWidth("12em");
+        userGrid.addColumn(User::getCommentsList)
+                .setHeader("Comments")
+                .setWidth("12em");
+        userGrid.addColumn(new ComponentRenderer<>(this::createNewCommentButton))
+                .setHeader("Add Comment")
+                .setWidth("5em");
         userGrid.setSelectionMode(Grid.SelectionMode.NONE);
 
         container.add(userGrid);
         add(container);
+    }
+
+    private Button createNewCommentButton() {
+        Button newCommentButton = new Button("Add", event -> Notification.show("Not done yet"));
+        newCommentButton.setIcon(new Icon(VaadinIcon.COMMENT));
+        newCommentButton.addClassName("call_button");
+
+        return newCommentButton;
     }
 
     public Button login(UserService userService) {
@@ -105,7 +123,7 @@ public class UserList extends Div {
                 checkbox.setIndeterminate(true);
             } else {
                 checkbox.setValue(true);
-                userService.addUser(new User(null,
+                userService.addUser(new User(
                         type_email.getValue(),
                         type_login.getValue(),
                         type_password.getValue(),

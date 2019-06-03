@@ -5,7 +5,6 @@ import com.szkaminski.backend.service.UserService;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Div;
-import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
@@ -20,11 +19,11 @@ import java.util.List;
 
 
 @Route(value = "list")
-public class UserAllList extends Div {
+public class UserList extends Div {
 
     private Grid<User> userGrid = new Grid<>();
 
-    public UserAllList(@Autowired UserService userService) {
+    public UserList(@Autowired UserService userService) {
         HorizontalLayout horizontalGrid = new HorizontalLayout();
         horizontalGrid.add(fillTheGrid());
         horizontalGrid.setSizeFull();
@@ -33,7 +32,6 @@ public class UserAllList extends Div {
         vertical.add(horizontalGrid);
         vertical.setSizeFull();
         add(vertical);
-        userService.addUser(new User(null, "test@email.com", "test", "test123", "608608608"));
         List<User> userList = userService.getAllUsers();
         userGrid.setItems(userList);
     }
