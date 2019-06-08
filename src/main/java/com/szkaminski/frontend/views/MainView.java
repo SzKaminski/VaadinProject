@@ -1,9 +1,7 @@
 package com.szkaminski.frontend.views;
 
 import com.szkaminski.backend.model.User;
-
 import com.szkaminski.backend.service.UserService;
-import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.checkbox.Checkbox;
@@ -80,7 +78,7 @@ public class MainView extends Div {
     }
 
     private Button createNewCommentButton() {
-        Button newCommentButton = new Button("Add", event -> Notification.show("Not done yet"));
+        Button newCommentButton = new Button("Add", event -> new CommentList().addComment(this.userGrid.getColumnByKey("Id")));
         newCommentButton.setIcon(new Icon(VaadinIcon.COMMENT));
         newCommentButton.addClassName("call_button");
 
@@ -148,6 +146,7 @@ public class MainView extends Div {
             try {
                 if (userFound.getPassword().equals(type_password.getValue())) {
                     loginDialog.close();
+
                     UI.getCurrent().getPage().reload();
                     Notification.show("Login correct");
                 } else {

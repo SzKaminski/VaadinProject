@@ -10,4 +10,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     @Query("from User where login like %:login%")
     User findByLogin(@Param("login") String login);
+
+    User getById(Long id);
 }

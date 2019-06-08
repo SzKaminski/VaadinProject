@@ -46,9 +46,9 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .and().authorizeRequests()
                 .antMatchers("/","/list").permitAll()
                 .anyRequest().authenticated()
-                .antMatchers("/#").hasRole("DRIVER")
+                .antMatchers("/#").hasRole("USER")
                 .antMatchers("/anonymous*").anonymous()
-                .and().formLogin().loginPage("/login").permitAll().loginProcessingUrl("/login")
+                .and().formLogin().loginPage("/").permitAll().loginProcessingUrl("/login")
                 .failureUrl("/login").successForwardUrl("/driver/account")
 
                 .and().logout().logoutSuccessUrl("/")
