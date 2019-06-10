@@ -1,7 +1,9 @@
 package com.szkaminski.frontend.views;
 
+import com.szkaminski.backend.configurations.WebSecurityConfiguration;
 import com.szkaminski.backend.model.User;
 import com.szkaminski.backend.service.UserService;
+import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.checkbox.Checkbox;
@@ -20,6 +22,9 @@ import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.router.Route;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.util.List;
 
@@ -30,9 +35,12 @@ public class MainView extends Div {
     private Grid<User> userGrid = new Grid<>();
     private HorizontalLayout navbar;
     private Dialog registerDialog, loginDialog;
+    private WebSecurityConfiguration webSecurityConfiguration;
+    private static User loggedUser;
 
 
     public MainView(@Autowired UserService userService) {
+        webSecurityConfiguration = new WebSecurityConfiguration();
         welcome = new H2("Hello World... I mean User");
         navbar = new HorizontalLayout();
         navbar.setWidth("90%");
@@ -46,12 +54,12 @@ public class MainView extends Div {
 
         navbar.add(menu);
         add(navbar);
-        addContent();
+        addContent(userService);
         List<User> userList = userService.getAllUsers();
         userGrid.setItems(userList);
     }
 
-    private void addContent() {
+    private void addContent(UserService userService) {
         VerticalLayout container = new VerticalLayout();
         container.setClassName("view-container");
         container.setAlignItems(FlexComponent.Alignment.STRETCH);
@@ -65,10 +73,10 @@ public class MainView extends Div {
         userGrid.addColumn(User::getLogin)
                 .setHeader("Login")
                 .setWidth("12em");
-        userGrid.addColumn(User::getCommentsList)
-                .setHeader("Comments")
-                .setWidth("12em");
-        userGrid.addColumn(new ComponentRenderer<>(this::createNewCommentButton))
+        userGrid.addColumn(new ComponentRenderer<>(() -> createGetCommentsButton(userService)))
+                .setHeader("Get Comment")
+                .setWidth("5em");
+        userGrid.addColumn(new ComponentRenderer<>(() -> createNewCommentButton(userService)))
                 .setHeader("Add Comment")
                 .setWidth("5em");
         userGrid.setSelectionMode(Grid.SelectionMode.NONE);
@@ -77,8 +85,15 @@ public class MainView extends Div {
         add(container);
     }
 
-    private Button createNewCommentButton() {
-        Button newCommentButton = new Button("Add", event -> new CommentList().addComment(this.userGrid.getColumnByKey("Id")));
+    private Button createGetCommentsButton(UserService userService) {
+        Button getCommentsButton = new Button("Show Comments", event -> new CommentList(userService).getComments(1L));
+        getCommentsButton.setIcon(new Icon((VaadinIcon.COMMENTS)));
+        getCommentsButton.addClassName("call_button");
+        return getCommentsButton;
+    }
+
+    private Button createNewCommentButton(UserService userService) {
+        Button newCommentButton = new Button("Add", event -> new CommentList(userService).addComment());
         newCommentButton.setIcon(new Icon(VaadinIcon.COMMENT));
         newCommentButton.addClassName("call_button");
 
@@ -145,10 +160,13 @@ public class MainView extends Div {
             User userFound = userService.getByLogin(value);
             try {
                 if (userFound.getPassword().equals(type_password.getValue())) {
-                    loginDialog.close();
 
-                    UI.getCurrent().getPage().reload();
+                    /*Authentication auth = new UsernamePasswordAuthenticationToken(type_login.getValue(),type_password.getValue());
+                    Authentication authenticated = webSecurityConfiguration.authenticationProvider().authenticate(auth);
+                    SecurityContextHolder.getContext().setAuthentication(authenticated);*/
+                    loggedUser = userFound;
                     Notification.show("Login correct");
+                    loginDialog.close();
                 } else {
                     Notification.show("Password uncorrect");
                 }
@@ -159,5 +177,9 @@ public class MainView extends Div {
 
         loginLayout.add(type_login, type_password, loginButton);
         return loginLayout;
+    }
+
+    public static User getLoggedUser() {
+        return loggedUser;
     }
 }
