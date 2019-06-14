@@ -1,10 +1,9 @@
 package com.szkaminski.backend.service;
 
-import com.szkaminski.backend.model.Comment;
 import com.szkaminski.backend.model.CustomUserDetails;
 import com.szkaminski.backend.model.User;
-import com.szkaminski.backend.repositories.CommentRepository;
 import com.szkaminski.backend.repositories.UserRepository;
+import com.vaadin.flow.router.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -13,15 +12,12 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.Properties;
 
 @Service
 public class UserService implements UserDetailsService {
 
     @Autowired
     private UserRepository userRepository;
-    @Autowired
-    private CommentRepository commentRepository;
 
 
     public List<User> getAllUsers() {
@@ -46,8 +42,11 @@ public class UserService implements UserDetailsService {
                 .map(CustomUserDetails::new).get();
     }
 
-    public Comment addComment(Comment comment) {
-        return commentRepository.save(comment);
+    public User update(User driver){
+        if(userRepository.existsById(driver.getId())){
+            return userRepository.save(driver);
+        }
+        else throw new NotFoundException("User not found");
     }
 
     public User getById(Long id) {

@@ -1,16 +1,14 @@
 package com.szkaminski.frontend.views;
 
 import com.szkaminski.backend.model.Comment;
-import com.szkaminski.backend.model.User;
 import com.szkaminski.backend.service.UserService;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dialog.Dialog;
+import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextArea;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
-import sun.applet.Main;
 
 import java.time.LocalDateTime;
 
@@ -38,7 +36,8 @@ public class CommentList extends UI {
             comment.setContent(text.getValue());
             comment.setUser(MainView.getLoggedUser());
             comment.setLocalDateTime(LocalDateTime.now());
-            userService.addComment(comment);
+            MainView.getLoggedUser().getCommentsList().add(comment);
+            userService.update(MainView.getLoggedUser());
 
             commentDialog.close();
         });
@@ -47,12 +46,14 @@ public class CommentList extends UI {
 
     public void getComments(Long id) {
         Dialog getComDialog = new Dialog();
+        VerticalLayout vl = new VerticalLayout();
+        getComDialog.add(vl);
         getComDialog.open();
 
-        TextArea commentsArea = new TextArea();
-        getComDialog.add(commentsArea);
         for (Comment e : userService.getById(id).getCommentsList()) {
-            commentsArea.setValue(e.getContent() + " " + e.getLocalDateTime());
+            TextArea newComment = new TextArea(e.getUser().getLogin());
+            newComment.setValue(e.getContent() + "\n" + e.getLocalDateTime());
+            vl.add(newComment);
         }
     }
 }

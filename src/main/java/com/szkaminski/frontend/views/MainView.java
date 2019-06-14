@@ -3,10 +3,10 @@ package com.szkaminski.frontend.views;
 import com.szkaminski.backend.configurations.WebSecurityConfiguration;
 import com.szkaminski.backend.model.User;
 import com.szkaminski.backend.service.UserService;
-import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.checkbox.Checkbox;
+import com.vaadin.flow.component.dependency.HtmlImport;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Div;
@@ -22,13 +22,11 @@ import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.router.Route;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.util.List;
 
 @Route(value = "")
+@HtmlImport("frontend://shared-styles.html")
 public class MainView extends Div {
 
     private H2 welcome;
@@ -51,6 +49,8 @@ public class MainView extends Div {
 
         menu.add(login(userService));
         menu.add(register(userService));
+
+        add(CookiesBar.getAcceptCookies());
 
         navbar.add(menu);
         add(navbar);
@@ -160,7 +160,6 @@ public class MainView extends Div {
             User userFound = userService.getByLogin(value);
             try {
                 if (userFound.getPassword().equals(type_password.getValue())) {
-
                     /*Authentication auth = new UsernamePasswordAuthenticationToken(type_login.getValue(),type_password.getValue());
                     Authentication authenticated = webSecurityConfiguration.authenticationProvider().authenticate(auth);
                     SecurityContextHolder.getContext().setAuthentication(authenticated);*/

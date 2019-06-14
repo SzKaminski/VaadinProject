@@ -23,7 +23,7 @@ public class User {
     private String password;
     private String phoneNumber;
 
-    @OneToMany(fetch = FetchType.EAGER)
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<Comment> commentsList;
 
     public User(String email, String login, String password, String phoneNumber) {
