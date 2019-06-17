@@ -34,10 +34,10 @@ public class CommentList extends UI {
         saveButton.addClickListener(e -> {
             Comment comment = new Comment();
             comment.setContent(text.getValue());
-            comment.setUser(MainView.getLoggedUser());
+            comment.setUser(MenuBar.getLoggedUser());
             comment.setLocalDateTime(LocalDateTime.now());
-            MainView.getLoggedUser().getCommentsList().add(comment);
-            userService.update(MainView.getLoggedUser());
+            MenuBar.getLoggedUser().getCommentsList().add(comment);
+            userService.update(MenuBar.getLoggedUser());
 
             commentDialog.close();
         });
