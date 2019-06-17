@@ -1,6 +1,7 @@
 package com.szkaminski.frontend.views;
 
 import com.szkaminski.backend.model.User;
+import com.szkaminski.backend.service.AuthService;
 import com.szkaminski.backend.service.UserService;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
@@ -17,13 +18,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class MenuBar extends HorizontalLayout {
 
     private Dialog registerDialog, loginDialog;
-    private static User loggedUser;
+    private HorizontalLayout menu;
 
     public MenuBar(@Autowired UserService userService) {
+        menu = new HorizontalLayout();
 
-        HorizontalLayout menu = new HorizontalLayout();
-
-        if (loggedUser != null) {
+        if (AuthService.isAuthenticated()) {
             menu.add(logout(userService));
         } else {
             menu.add(login(userService));
@@ -35,7 +35,7 @@ public class MenuBar extends HorizontalLayout {
     private Button logout(UserService userService) {
         Button logoutButton = new Button("Logout",
                 e -> {
-                    loggedUser = null;
+                    AuthService.logOut();
                     UI.getCurrent().getPage().reload();
                 });
 
@@ -94,35 +94,27 @@ public class MenuBar extends HorizontalLayout {
         VerticalLayout loginLayout = new VerticalLayout();
         TextArea type_login = new TextArea("type login");
         PasswordField type_password = new PasswordField("type password");
-
+        Checkbox checkbox = new Checkbox("Remember Me");
         Button loginButton = new Button("Login");
 
         loginButton.addClickListener(e -> {
-            String value = type_login.getValue();
-            User userFound = userService.getByLogin(value);
-            try {
-                if (userFound.getPassword().equals(type_password.getValue())) {
-                    /*Authentication auth = new UsernamePasswordAuthenticationToken(type_login.getValue(),type_password.getValue());
-                    Authentication authenticated = webSecurityConfiguration.authenticationProvider().authenticate(auth);
-                    SecurityContextHolder.getContext().setAuthentication(authenticated);*/
-                    loggedUser = userFound;
-                    Notification.show("Login correct");
-                    loginDialog.close();
-                    UI.getCurrent().getPage().reload();
-                } else {
-                    Notification.show("Password uncorrect");
-                }
-            } catch (NullPointerException exception) {
-                Notification.show("User not found");
-            }
+            onLogin(type_login.getValue(), type_password.getValue(), checkbox.getValue(), userService);
         });
 
-        loginLayout.add(type_login, type_password, loginButton);
+        loginLayout.add(type_login, type_password, checkbox, loginButton);
         return loginLayout;
     }
 
-    public static User getLoggedUser() {
-        return loggedUser;
-    }
 
+    private void onLogin(String username, String password, boolean rememberMe, UserService userService) {
+        if (AuthService.login(username, password, rememberMe, userService)) {
+            Notification.show("Login correct");
+            loginDialog.close();
+            UI.getCurrent().getPage().reload();
+            menu.add(logout(userService));
+        } else {
+            menu.add(login(userService));
+            menu.add(register(userService));
+        }
+    }
 }

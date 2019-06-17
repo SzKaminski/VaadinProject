@@ -10,7 +10,10 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.math.BigInteger;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -51,5 +54,25 @@ public class UserService implements UserDetailsService {
 
     public User getById(Long id) {
         return userRepository.getById(id);
+    }
+
+    private static Map<Long, String> rememberedUsers = new HashMap<>();
+
+    public boolean isAuthenticUser(String username, String password) {
+        User user = getByLogin(username);
+        return user.getPassword().equals(password);
+    }
+
+    public static Long rememberUser(User user) {
+        rememberedUsers.put(user.getId(), user.getLogin());
+        return user.getId();
+    }
+
+    public static String getRememberedUser(Long id) {
+        return rememberedUsers.get(id);
+    }
+
+    public static void removeRememberedUser(Long id) {
+        rememberedUsers.remove(id);
     }
 }
