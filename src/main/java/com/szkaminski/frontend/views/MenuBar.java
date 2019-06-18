@@ -6,15 +6,21 @@ import com.szkaminski.backend.service.UserService;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.checkbox.Checkbox;
+import com.vaadin.flow.component.dependency.HtmlImport;
 import com.vaadin.flow.component.dialog.Dialog;
+import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.PasswordField;
 import com.vaadin.flow.component.textfield.TextArea;
+import com.vaadin.flow.dom.Element;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 
+@HtmlImport("frontend://bower_components/iron-form/iron-form.html")
 public class MenuBar extends HorizontalLayout {
 
     private Dialog registerDialog, loginDialog;
@@ -101,8 +107,33 @@ public class MenuBar extends HorizontalLayout {
             onLogin(type_login.getValue(), type_password.getValue(), checkbox.getValue(), userService);
         });
 
-        loginLayout.add(type_login, type_password, checkbox, loginButton);
+        FormLayout formLayout = new FormLayout(type_login, type_password, loginButton, checkbox);
+        formLayout.setSizeUndefined();
+
+        VerticalLayout layout = new VerticalLayout(formLayout);
+        layout.setSizeFull();
+
+        layout.setHorizontalComponentAlignment(FlexComponent.Alignment.CENTER, formLayout);
+
+        Element formElement = new Element("form");
+        formElement.setAttribute("method", "post");
+        formElement.setAttribute("action", "login");
+        formElement.appendChild(formLayout.getElement());
+
+        Element ironForm = new Element("iron-form");
+        ironForm.setAttribute("id", "ironform");
+        ironForm.setAttribute("allow-redirect", true);
+        ironForm.appendChild(formElement);
+
+        getElement().appendChild(ironForm);
+
+        setClassName("login-view");
+
+        loginLayout.add(formLayout);
+        setSizeFull();
+
         return loginLayout;
+
     }
 
 
@@ -116,5 +147,9 @@ public class MenuBar extends HorizontalLayout {
             menu.add(login(userService));
             menu.add(register(userService));
         }
+    }
+
+    public static User getUser(UserService userService) {
+        return userService.getByLogin(SecurityContextHolder.getContext().getAuthentication().getName());
     }
 }
