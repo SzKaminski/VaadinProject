@@ -28,8 +28,6 @@ public class MainView extends Div {
     private HorizontalLayout navbar;
     private WebSecurityConfiguration webSecurityConfiguration;
 
-
-
     public MainView(@Autowired UserService userService) {
         webSecurityConfiguration = new WebSecurityConfiguration();
         welcome = new H2("Hello World... I mean User");

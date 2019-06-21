@@ -17,6 +17,7 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.PasswordField;
 import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.dom.Element;
+import com.vaadin.flow.server.VaadinService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 
@@ -28,14 +29,14 @@ public class MenuBar extends HorizontalLayout {
 
     public MenuBar(@Autowired UserService userService) {
         menu = new HorizontalLayout();
-
-        if (AuthService.isAuthenticated()) {
+        add(menu);
+        if (VaadinService.getCurrentRequest().getCookies() != null && AuthService.isAuthenticated()) {
             menu.add(logout(userService));
         } else {
             menu.add(login(userService));
             menu.add(register(userService));
         }
-        add(menu);
+
     }
 
     private Button logout(UserService userService) {
@@ -142,10 +143,6 @@ public class MenuBar extends HorizontalLayout {
             Notification.show("Login correct");
             loginDialog.close();
             UI.getCurrent().getPage().reload();
-            menu.add(logout(userService));
-        } else {
-            menu.add(login(userService));
-            menu.add(register(userService));
         }
     }
 
