@@ -22,5 +22,9 @@ public class Comment {
     private String content;
     private LocalDateTime localDateTime;
 
-
+    public Comment(User user, String content, LocalDateTime localDateTime) {
+        this.user = user;
+        this.content = content;
+        this.localDateTime = localDateTime;
+    }
 }

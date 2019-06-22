@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Component
 public class CommentList extends UI {
@@ -32,13 +33,11 @@ public class CommentList extends UI {
         commentDialog.add(text, saveButton);
 
         saveButton.addClickListener(e -> {
-            Comment comment = new Comment();
-            comment.setContent(text.getValue());
-            comment.setUser(MenuBar.getUser(userService));
-            comment.setLocalDateTime(LocalDateTime.now());
-            MenuBar.getUser(userService).getCommentsList().add(comment);
+            Comment comment = new Comment(MenuBar.getUser(userService),text.getValue(),LocalDateTime.now());
+            List<Comment> commentList = MenuBar.getUser(userService).getCommentsList();
+            commentList.add(comment);
+            MenuBar.getUser(userService).setCommentsList(commentList);
             userService.update(MenuBar.getUser(userService));
-
             commentDialog.close();
         });
 

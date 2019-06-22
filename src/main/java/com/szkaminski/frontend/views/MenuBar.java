@@ -18,16 +18,29 @@ import com.vaadin.flow.component.textfield.PasswordField;
 import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.dom.Element;
 import com.vaadin.flow.server.VaadinService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 @HtmlImport("frontend://bower_components/iron-form/iron-form.html")
 public class MenuBar extends HorizontalLayout {
 
-    private Dialog registerDialog, loginDialog;
-    private HorizontalLayout menu;
+    private static Dialog registerDialog, loginDialog;
+    private static HorizontalLayout menu;
 
-    public MenuBar(@Autowired UserService userService) {
+    public static HorizontalLayout getContent(UserService userService){
+        menu = new HorizontalLayout();
+
+        if (VaadinService.getCurrentRequest().getCookies() != null && AuthService.isAuthenticated()) {
+            menu.add(logout(userService));
+        } else {
+            menu.add(login(userService));
+            menu.add(register(userService));
+        }
+
+        return menu;
+
+    }
+
+    /*public MenuBar(@Autowired UserService userService) {
         menu = new HorizontalLayout();
         add(menu);
         if (VaadinService.getCurrentRequest().getCookies() != null && AuthService.isAuthenticated()) {
@@ -37,9 +50,9 @@ public class MenuBar extends HorizontalLayout {
             menu.add(register(userService));
         }
 
-    }
+    }*/
 
-    private Button logout(UserService userService) {
+    private static Button logout(UserService userService) {
         Button logoutButton = new Button("Logout",
                 e -> {
                     AuthService.logOut();
@@ -49,7 +62,7 @@ public class MenuBar extends HorizontalLayout {
         return logoutButton;
     }
 
-    public Button login(UserService userService) {
+    public static Button login(UserService userService) {
         loginDialog = new Dialog();
         loginDialog.setWidth("auto");
         loginDialog.add(loginPattern(userService));
@@ -58,7 +71,7 @@ public class MenuBar extends HorizontalLayout {
         return loginButton;
     }
 
-    public Button register(UserService userService) {
+    public static Button register(UserService userService) {
         registerDialog = new Dialog();
         registerDialog.setWidth("auto");
         registerDialog.add(registerPattern(userService));
@@ -67,7 +80,7 @@ public class MenuBar extends HorizontalLayout {
         return registerButton;
     }
 
-    public VerticalLayout registerPattern(UserService userService) {
+    public static VerticalLayout registerPattern(UserService userService) {
         VerticalLayout registerLayout = new VerticalLayout();
         TextArea type_email = new TextArea("type email");
         TextArea type_login = new TextArea("type login");
@@ -97,7 +110,7 @@ public class MenuBar extends HorizontalLayout {
         return registerLayout;
     }
 
-    public VerticalLayout loginPattern(UserService userService) {
+    public static VerticalLayout loginPattern(UserService userService) {
         VerticalLayout loginLayout = new VerticalLayout();
         TextArea type_login = new TextArea("type login");
         PasswordField type_password = new PasswordField("type password");
@@ -126,19 +139,19 @@ public class MenuBar extends HorizontalLayout {
         ironForm.setAttribute("allow-redirect", true);
         ironForm.appendChild(formElement);
 
-        getElement().appendChild(ironForm);
+        /*getElement().appendChild(ironForm);
 
-        setClassName("login-view");
+        setClassName("login-view");*/
 
         loginLayout.add(formLayout);
-        setSizeFull();
+
 
         return loginLayout;
 
     }
 
 
-    private void onLogin(String username, String password, boolean rememberMe, UserService userService) {
+    private static void onLogin(String username, String password, boolean rememberMe, UserService userService) {
         if (AuthService.login(username, password, rememberMe, userService)) {
             Notification.show("Login correct");
             loginDialog.close();

@@ -26,10 +26,8 @@ public class MainView extends Div {
     private H2 welcome;
     private Grid<User> userGrid = new Grid<>();
     private HorizontalLayout navbar;
-    private WebSecurityConfiguration webSecurityConfiguration;
 
     public MainView(@Autowired UserService userService) {
-        webSecurityConfiguration = new WebSecurityConfiguration();
         welcome = new H2("Hello World... I mean User");
         navbar = new HorizontalLayout();
         navbar.setWidth("90%");
@@ -37,14 +35,14 @@ public class MainView extends Div {
         add(welcome);
         add(CookiesBar.getAcceptCookies());
 
-        navbar.add(new MenuBar(userService));
+        navbar.add(MenuBar.getContent(userService));
         add(navbar);
-        addContent(userService);
+        add(addContent(userService));
         List<User> userList = userService.getAllUsers();
         userGrid.setItems(userList);
     }
 
-    private void addContent(UserService userService) {
+    private VerticalLayout addContent(UserService userService) {
         VerticalLayout container = new VerticalLayout();
         container.setClassName("view-container");
         container.setAlignItems(FlexComponent.Alignment.STRETCH);
@@ -67,7 +65,7 @@ public class MainView extends Div {
         userGrid.setSelectionMode(Grid.SelectionMode.NONE);
 
         container.add(userGrid);
-        add(container);
+        return container;
     }
 
     private Button createGetCommentsButton(UserService userService) {
