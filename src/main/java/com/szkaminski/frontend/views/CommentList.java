@@ -1,6 +1,7 @@
 package com.szkaminski.frontend.views;
 
 import com.szkaminski.backend.model.Comment;
+import com.szkaminski.backend.model.User;
 import com.szkaminski.backend.service.UserService;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
@@ -11,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Component
@@ -34,10 +36,7 @@ public class CommentList extends UI {
 
         saveButton.addClickListener(e -> {
             Comment comment = new Comment(MenuBar.getUser(userService),text.getValue(),LocalDateTime.now());
-            List<Comment> commentList = MenuBar.getUser(userService).getCommentsList();
-            commentList.add(comment);
-            MenuBar.getUser(userService).setCommentsList(commentList);
-            userService.update(MenuBar.getUser(userService));
+            MenuBar.getUser(userService).getCommentsList().add(comment);
             commentDialog.close();
         });
 

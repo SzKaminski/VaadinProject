@@ -2,7 +2,6 @@ package com.szkaminski.backend.service;
 
 import com.szkaminski.backend.model.User;
 import com.vaadin.flow.component.UI;
-import com.vaadin.flow.component.page.Page;
 import com.vaadin.flow.server.VaadinService;
 import com.vaadin.flow.server.VaadinSession;
 

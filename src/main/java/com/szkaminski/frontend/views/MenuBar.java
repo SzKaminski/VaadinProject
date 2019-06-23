@@ -10,6 +10,7 @@ import com.vaadin.flow.component.dependency.HtmlImport;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.html.Div;
+import com.vaadin.flow.component.html.Main;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -31,26 +32,14 @@ public class MenuBar extends HorizontalLayout {
 
         if (VaadinService.getCurrentRequest().getCookies() != null && AuthService.isAuthenticated()) {
             menu.add(logout(userService));
+            MainView.setUserpanelVisible();
         } else {
             menu.add(login(userService));
             menu.add(register(userService));
         }
 
         return menu;
-
     }
-
-    /*public MenuBar(@Autowired UserService userService) {
-        menu = new HorizontalLayout();
-        add(menu);
-        if (VaadinService.getCurrentRequest().getCookies() != null && AuthService.isAuthenticated()) {
-            menu.add(logout(userService));
-        } else {
-            menu.add(login(userService));
-            menu.add(register(userService));
-        }
-
-    }*/
 
     private static Button logout(UserService userService) {
         Button logoutButton = new Button("Logout",
@@ -139,17 +128,10 @@ public class MenuBar extends HorizontalLayout {
         ironForm.setAttribute("allow-redirect", true);
         ironForm.appendChild(formElement);
 
-        /*getElement().appendChild(ironForm);
-
-        setClassName("login-view");*/
-
         loginLayout.add(formLayout);
 
-
         return loginLayout;
-
     }
-
 
     private static void onLogin(String username, String password, boolean rememberMe, UserService userService) {
         if (AuthService.login(username, password, rememberMe, userService)) {
