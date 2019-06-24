@@ -32,7 +32,7 @@ public class MenuBar extends HorizontalLayout {
 
         if (VaadinService.getCurrentRequest().getCookies() != null && AuthService.isAuthenticated()) {
             menu.add(logout(userService));
-            MainView.setUserpanelVisible();
+            MainView.setUserpanelVisible(userService);
         } else {
             menu.add(login(userService));
             menu.add(register(userService));
