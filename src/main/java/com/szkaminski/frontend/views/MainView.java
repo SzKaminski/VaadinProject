@@ -54,6 +54,7 @@ public class MainView extends Div {
         navbar.add(MenuBar.getContent(userService));
         add(navbar);
         add(userpanel);
+        add(AuthorView.getAuthorInfo());
         add(addContent(userService));
         List<User> userList = userService.getAllUsers();
         userGrid.setItems(userList);
