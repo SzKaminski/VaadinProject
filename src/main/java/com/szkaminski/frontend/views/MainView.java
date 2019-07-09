@@ -1,5 +1,6 @@
 package com.szkaminski.frontend.views;
 
+import com.szkaminski.backend.model.PageAnalitics;
 import com.szkaminski.backend.model.User;
 import com.szkaminski.backend.service.UserService;
 import com.vaadin.flow.component.button.Button;
@@ -29,17 +30,20 @@ public class MainView extends Div {
     private HorizontalLayout navbar;
     private static VerticalLayout userpanel;
 
+    private static PageAnalitics pageAnalitics = new PageAnalitics();
+
     public MainView(@Autowired UserService userService) {
         helloCounterBar = new HorizontalLayout();
         HorizontalLayout counterdiv = new HorizontalLayout();
-        ++counter;
+        pageAnalitics.setVisitCounter(pageAnalitics.getVisitCounter()+1);
+        counter = pageAnalitics.getVisitCounter();
         counterdiv.setClassName("counterdiv");
         Icon thumbupicon = new Icon(VaadinIcon.THUMBS_UP);
         Icon thumbsdownicon = new Icon(VaadinIcon.THUMBS_DOWN);
         thumbupicon.setClassName("icon");
         thumbsdownicon.setClassName("icon");
 
-        counterdiv.add(new H4("Page visitor counter: " + counter), new H4("5"), thumbupicon, new H4("2"), thumbsdownicon);
+        counterdiv.add(new H4("Page visitor counter: " + counter), new H4(""+pageAnalitics.getLikeCounter()), thumbupicon, new H4(""+pageAnalitics.getNotLikeCounter()), thumbsdownicon);
 
         H2 welcome = new H2("Hello World... I mean User");
         helloCounterBar.add(welcome, counterdiv);
@@ -67,8 +71,12 @@ public class MainView extends Div {
         userPanelHor.add(new Button(new Icon(VaadinIcon.USER)));
         userPanelHor.add(createNewCommentButton(userService));
         userPanelHor.add(new Button(new Icon(VaadinIcon.FACEBOOK)));
-        userPanelHor.add(new Button(new Icon(VaadinIcon.THUMBS_UP)));
-        userPanelHor.add(new Button(new Icon(VaadinIcon.THUMBS_DOWN)));
+        userPanelHor.add(new Button(new Icon(VaadinIcon.THUMBS_UP), event -> {
+            pageAnalitics.setLikeCounter(pageAnalitics.getLikeCounter()+1);
+        }));
+        userPanelHor.add(new Button(new Icon(VaadinIcon.THUMBS_DOWN), event -> {
+            pageAnalitics.setLikeCounter(pageAnalitics.getNotLikeCounter()+1);
+        }));
         userpanel.add(userPanelHor);
     }
 

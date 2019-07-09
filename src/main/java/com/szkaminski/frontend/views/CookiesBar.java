@@ -1,6 +1,7 @@
 package com.szkaminski.frontend.views;
 
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.html.Anchor;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.server.VaadinService;
@@ -12,7 +13,8 @@ public class CookiesBar {
 
     public static HorizontalLayout getAcceptCookies() {
         HorizontalLayout cookiesLayout = new HorizontalLayout();
-        cookiesLayout.add(new Label("Please, accept cookies policy to continue"));
+        Anchor cookiesPolicyAnchor = new Anchor("https://www.google.com/search?q=cookies+policy", "cookies policy");
+        cookiesLayout.add(new Label("Please, accept"), cookiesPolicyAnchor, new Label("to continue"));
         Button acceptButton = new Button("Accept");
         cookiesLayout.add(acceptButton);
         cookiesLayout.setClassName("cookies-bar");
