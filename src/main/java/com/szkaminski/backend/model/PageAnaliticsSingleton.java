@@ -11,11 +11,20 @@ import javax.persistence.*;
 @NoArgsConstructor
 @Entity
 @Table(name = "analitics")
-public class PageAnalitics {
+public class PageAnaliticsSingleton {
+
+    private static PageAnaliticsSingleton INSTANCE;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+
+    public static PageAnaliticsSingleton getINSTANCE() {
+        if (INSTANCE == null){
+            INSTANCE = new PageAnaliticsSingleton();
+        }
+        return INSTANCE;
+    }
 
     private int visitCounter;
     private int likeCounter;
