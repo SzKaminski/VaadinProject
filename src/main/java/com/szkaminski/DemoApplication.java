@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @SpringBootApplication
-public class DemoApplication implements CommandLineRunner{
+public class DemoApplication/* implements CommandLineRunner*/{
 
     public static void main(String[] args) {
 
@@ -24,7 +24,7 @@ public class DemoApplication implements CommandLineRunner{
     @Autowired
     private UserService userService;
 
-    @Override
+    /*@Override
     public void run(String... args) throws Exception {
         User user = new User("test@email.com", "test", "test123", "608608608");
         List<Comment> comments = new ArrayList<>();
@@ -37,5 +37,5 @@ public class DemoApplication implements CommandLineRunner{
 
         userService.addUser(user);
         System.out.println("Runner!");
-    }
+    }*/
 }
