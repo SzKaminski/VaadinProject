@@ -1,6 +1,7 @@
 package com.szkaminski.frontend.views;
 
 import com.szkaminski.backend.model.User;
+import com.szkaminski.backend.service.AnaliticsService;
 import com.szkaminski.backend.service.AuthService;
 import com.szkaminski.backend.service.UserService;
 import com.vaadin.flow.component.UI;
@@ -26,12 +27,12 @@ public class MenuBar extends HorizontalLayout {
     private static Dialog registerDialog, loginDialog;
     private static HorizontalLayout menu;
 
-    public static HorizontalLayout getContent(UserService userService){
+    public static HorizontalLayout getContent(UserService userService, AnaliticsService analiticsService){
         menu = new HorizontalLayout();
 
         if (VaadinService.getCurrentRequest().getCookies() != null && AuthService.isAuthenticated()) {
             menu.add(logout(userService));
-            MainView.setUserpanelVisible(userService);
+            MainView.setUserpanelVisible(userService, analiticsService);
         } else {
             menu.add(login(userService));
             menu.add(register(userService));

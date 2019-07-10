@@ -1,7 +1,8 @@
 package com.szkaminski.frontend.views;
 
-import com.szkaminski.backend.model.PageAnalitics;
+import com.szkaminski.backend.model.PageAnaliticsSingleton;
 import com.szkaminski.backend.model.User;
+import com.szkaminski.backend.service.AnaliticsService;
 import com.szkaminski.backend.service.UserService;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.HtmlImport;
@@ -14,6 +15,7 @@ import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.radiobutton.RadioButtonGroup;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.router.Route;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,20 +32,25 @@ public class MainView extends Div {
     private HorizontalLayout navbar;
     private static VerticalLayout userpanel;
 
-    private static PageAnalitics pageAnalitics = new PageAnalitics();
-
-    public MainView(@Autowired UserService userService) {
+    public MainView(@Autowired UserService userService, @Autowired AnaliticsService analiticsService) {
         helloCounterBar = new HorizontalLayout();
         HorizontalLayout counterdiv = new HorizontalLayout();
-        pageAnalitics.setVisitCounter(pageAnalitics.getVisitCounter()+1);
-        counter = pageAnalitics.getVisitCounter();
+
+
+        counter = PageAnaliticsSingleton.getINSTANCE().getVisitCounter();
+        PageAnaliticsSingleton.getINSTANCE().setVisitCounter(counter + 1);
+        analiticsService.updateAnalitics();
+
         counterdiv.setClassName("counterdiv");
         Icon thumbupicon = new Icon(VaadinIcon.THUMBS_UP);
         Icon thumbsdownicon = new Icon(VaadinIcon.THUMBS_DOWN);
         thumbupicon.setClassName("icon");
         thumbsdownicon.setClassName("icon");
 
-        counterdiv.add(new H4("Page visitor counter: " + counter), new H4(""+pageAnalitics.getLikeCounter()), thumbupicon, new H4(""+pageAnalitics.getNotLikeCounter()), thumbsdownicon);
+        counterdiv.add(
+                new H4("Page visitor counter: " + counter),
+                new H4("" + analiticsService.getLikeCounter()), thumbupicon,
+                new H4("" + analiticsService.getNotLikeCounter()), thumbsdownicon);
 
         H2 welcome = new H2("Hello World... I mean User");
         helloCounterBar.add(welcome, counterdiv);
@@ -55,7 +62,7 @@ public class MainView extends Div {
         add(helloCounterBar);
         add(CookiesBar.getAcceptCookies());
 
-        navbar.add(MenuBar.getContent(userService));
+        navbar.add(MenuBar.getContent(userService, analiticsService));
         add(navbar);
         add(userpanel);
         add(AuthorView.getAuthorInfo());
@@ -64,19 +71,25 @@ public class MainView extends Div {
         userGrid.setItems(userList);
     }
 
-    public static void setUserpanelVisible(UserService userService) {
+    public static void setUserpanelVisible(UserService userService, AnaliticsService analiticsService) {
         userpanel.setVisible(true);
         userpanel.add(new H4("User Panel"));
         HorizontalLayout userPanelHor = new HorizontalLayout();
         userPanelHor.add(new Button(new Icon(VaadinIcon.USER)));
         userPanelHor.add(createNewCommentButton(userService));
-        userPanelHor.add(new Button(new Icon(VaadinIcon.FACEBOOK)));
-        userPanelHor.add(new Button(new Icon(VaadinIcon.THUMBS_UP), event -> {
-            pageAnalitics.setLikeCounter(pageAnalitics.getLikeCounter()+1);
-        }));
-        userPanelHor.add(new Button(new Icon(VaadinIcon.THUMBS_DOWN), event -> {
-            pageAnalitics.setLikeCounter(pageAnalitics.getNotLikeCounter()+1);
-        }));
+        Button facebookButton = new Button(new Icon(VaadinIcon.FACEBOOK));
+        Button thumbsUpButton = new Button(new Icon(VaadinIcon.THUMBS_UP), event -> {
+            PageAnaliticsSingleton.getINSTANCE().setLikeCounter(PageAnaliticsSingleton.getINSTANCE().getLikeCounter() + 1);
+            analiticsService.updateAnalitics();
+        });
+        Button thumbsDownButton = new Button(new Icon(VaadinIcon.THUMBS_DOWN), event -> {
+            PageAnaliticsSingleton.getINSTANCE().setNotLikeCounter(PageAnaliticsSingleton.getINSTANCE().getNotLikeCounter() + 1);
+            analiticsService.updateAnalitics();
+        });
+        RadioButtonGroup<Button> buttonGroup = new RadioButtonGroup<>();
+        buttonGroup.add(facebookButton, thumbsUpButton, thumbsDownButton);
+        userPanelHor.add(buttonGroup);
+
         userpanel.add(userPanelHor);
     }
 
