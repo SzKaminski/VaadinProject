@@ -23,6 +23,10 @@ public class AnaliticsService {
         return analiticsRepository.findById(PageAnaliticsSingleton.getINSTANCE().getId());
     }
 
+    public int getVisitCounter(){
+        return analiticsRepository.sumAllVisit();
+    }
+
     public int getLikeCounter(){
         return getAnalitics().get().getLikeCounter();
     }
