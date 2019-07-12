@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Data
 @AllArgsConstructor
@@ -25,6 +26,8 @@ public class PageAnaliticsSingleton {
         }
         return INSTANCE;
     }
+
+    private LocalDateTime dateTime;
 
     private int visitCounter;
     private int likeCounter;
