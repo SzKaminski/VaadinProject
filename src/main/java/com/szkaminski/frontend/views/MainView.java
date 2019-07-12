@@ -36,8 +36,10 @@ public class MainView extends Div {
         helloCounterBar = new HorizontalLayout();
         HorizontalLayout counterdiv = new HorizontalLayout();
 
+        // counter = PageAnaliticsSingleton.getINSTANCE().getVisitCounter();
+        //todo: null pointer
+        counter = analiticsService.getVisitCounter();
 
-        counter = PageAnaliticsSingleton.getINSTANCE().getVisitCounter();
         PageAnaliticsSingleton.getINSTANCE().setVisitCounter(counter + 1);
         analiticsService.updateAnalitics();
 
