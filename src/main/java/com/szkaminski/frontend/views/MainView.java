@@ -38,8 +38,11 @@ public class MainView extends Div {
 
         // counter = PageAnaliticsSingleton.getINSTANCE().getVisitCounter();
         //todo: null pointer
-        counter = analiticsService.getVisitCounter();
-
+        try {
+            counter = analiticsService.getVisitCounter();
+        }catch (Exception e){
+            counter = 0;
+        }
         PageAnaliticsSingleton.getINSTANCE().setVisitCounter(counter + 1);
         analiticsService.updateAnalitics();
 
@@ -126,7 +129,7 @@ public class MainView extends Div {
     }
 
     private static Button createNewCommentButton(UserService userService) {
-        Button newCommentButton = new Button("Add", event -> new CommentList(userService).addComment());
+        Button newCommentButton = new Button("Add", event -> new CommentList(userService).addComment(userService));
         newCommentButton.setIcon(new Icon(VaadinIcon.COMMENT));
         newCommentButton.addClassName("call_button");
 
