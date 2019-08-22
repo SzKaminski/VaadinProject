@@ -1,5 +1,6 @@
 package com.szkaminski.backend.service;
 
+import com.szkaminski.backend.model.Role;
 import com.szkaminski.backend.model.User;
 import org.hamcrest.Matchers;
 import org.junit.Assert;
@@ -27,7 +28,7 @@ public class UserServiceTest {
 
     private List<User> prepareMockData() {
         List<User> userList = new ArrayList<>();
-        userList.add(new User("test@email.com", "test", "test123", "608608608"));
+        userList.add(new User("test@email.com", "test", "test123", "608608608", Role.USER));
         return userList;
     }
 
@@ -35,7 +36,7 @@ public class UserServiceTest {
     public void addUser() {
         //given
         UserService userService = mock(UserService.class);
-        Mockito.when(userService.addUser(Mockito.any(User.class))).thenReturn(new User("test@email.com", "test", "test123", "608608608"));
+        Mockito.when(userService.addUser(Mockito.any(User.class))).thenReturn(new User("test@email.com", "test", "test123", "608608608",Role.USER));
         //when
         User user = userService.addUser(new User());
         //then
@@ -46,7 +47,7 @@ public class UserServiceTest {
     public void getByLogin() {
         //given
         UserService userService = mock(UserService.class);
-        Mockito.when(userService.getByLogin(Mockito.anyString())).thenReturn(new User("test@email.com", "test", "test123", "608608608"));
+        Mockito.when(userService.getByLogin(Mockito.anyString())).thenReturn(new User("test@email.com", "test", "test123", "608608608",Role.USER));
         //when
         User user = userService.getByLogin(Mockito.anyString());
         //then

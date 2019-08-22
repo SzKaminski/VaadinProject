@@ -1,9 +1,11 @@
 package com.szkaminski.backend.model;
 
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 
 public class CustomUserDetails extends User implements UserDetails {
@@ -15,8 +17,7 @@ public class CustomUserDetails extends User implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-
-        return new HashSet<>();
+        return Collections.singleton(new SimpleGrantedAuthority(user.getRole().toString().toLowerCase()));
     }
 
     @Override

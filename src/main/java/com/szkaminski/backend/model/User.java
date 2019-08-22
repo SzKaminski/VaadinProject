@@ -22,14 +22,16 @@ public class User {
     private String login;
     private String password;
     private String phoneNumber;
+    private Role role;
 
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<Comment> commentsList;
 
-    public User(String email, String login, String password, String phoneNumber) {
+    public User(String email, String login, String password, String phoneNumber, Role role) {
         this.email = email;
         this.login = login;
         this.password = password;
         this.phoneNumber = phoneNumber;
+        this.role = role;
     }
 }

@@ -1,6 +1,7 @@
 package com.szkaminski;
 
 import com.szkaminski.backend.model.Comment;
+import com.szkaminski.backend.model.Role;
 import com.szkaminski.backend.model.User;
 import com.szkaminski.backend.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @SpringBootApplication
-public class DemoApplication/* implements CommandLineRunner*/{
+public class DemoApplication implements CommandLineRunner{
 
     public static void main(String[] args) {
 
@@ -24,9 +25,11 @@ public class DemoApplication/* implements CommandLineRunner*/{
     @Autowired
     private UserService userService;
 
-    /*@Override
+
+    @Override
     public void run(String... args) throws Exception {
-        User user = new User("test@email.com", "test", "test123", "608608608");
+        User admin = new User("admin@gmail.com", "admin", "admin", "000000000", Role.ADMIN);
+        User user = new User("test@email.com", "test", "test123", "608608608",Role.USER);
         List<Comment> comments = new ArrayList<>();
         Comment testComment = new Comment();
         testComment.setLocalDateTime(LocalDateTime.now());
@@ -36,6 +39,7 @@ public class DemoApplication/* implements CommandLineRunner*/{
         user.setCommentsList(comments);
 
         userService.addUser(user);
+        userService.addUser(admin);
         System.out.println("Runner!");
-    }*/
+    }
 }

@@ -1,5 +1,6 @@
 package com.szkaminski.frontend.views;
 
+import com.szkaminski.backend.model.Role;
 import com.szkaminski.backend.model.User;
 import com.szkaminski.backend.service.AnaliticsService;
 import com.szkaminski.backend.service.AuthService;
@@ -91,7 +92,8 @@ public class MenuBar extends HorizontalLayout {
                         type_email.getValue(),
                         type_login.getValue(),
                         type_password.getValue(),
-                        type_phoneNumber.getValue()));
+                        type_phoneNumber.getValue(),
+                        Role.USER));
                 registerDialog.close();
                 UI.getCurrent().getPage().reload();
             }
